@@ -1,0 +1,28 @@
+[
+  {
+    "id": "REFUND_AND_RELEASE",
+    "description": "Refund captured funds and release the reserved seat after ticket issuance fails.",
+    "when_effects": "Payment was captured, a seat remains reserved, and no ticket was issued.",
+    "required_succeeded_steps": [
+      "RESERVE_SEAT",
+      "CHARGE_PAYMENT"
+    ],
+    "required_failed_steps": [
+      "ISSUE_TICKET"
+    ],
+    "forbidden_succeeded_steps": []
+  },
+  {
+    "id": "VOID_AUTH_AND_RELEASE",
+    "description": "Void a payment authorization and release the reserved seat after ticket issuance fails.",
+    "when_effects": "Payment was only authorized, no funds were captured, and no ticket was issued.",
+    "required_succeeded_steps": [
+      "RESERVE_SEAT",
+      "CHARGE_PAYMENT"
+    ],
+    "required_failed_steps": [
+      "ISSUE_TICKET"
+    ],
+    "forbidden_succeeded_steps": []
+  }
+]

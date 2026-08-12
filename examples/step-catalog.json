@@ -1,0 +1,17 @@
+[
+  {
+    "id": "RESERVE_SEAT",
+    "description": "Reserve the requested seat with the inventory service.",
+    "reporter": "0x1111111111111111111111111111111111111111"
+  },
+  {
+    "id": "CHARGE_PAYMENT",
+    "description": "Authorize or capture the customer's payment with the payment service.",
+    "reporter": "0x2222222222222222222222222222222222222222"
+  },
+  {
+    "id": "ISSUE_TICKET",
+    "description": "Issue the final ticket after inventory and payment steps succeed.",
+    "reporter": "0x3333333333333333333333333333333333333333"
+  }
+]

@@ -1,0 +1,84 @@
+{
+  "record_type": "hosted_consensus_failure",
+  "submission_eligible": false,
+  "network": "studionet",
+  "chain_id": 61999,
+  "rpc_url": "https://studio.genlayer.com/api",
+  "contract_address": "0xDd57B2257b3cA571CcbCED9680DD925B34E9C003",
+  "contract_source_sha256": "d739f2f75f68b73a5f5ead8e9aad867ef9272cbf260fb2415102d927716137fb",
+  "contract_source_bytes": 37710,
+  "contract_version": "0.2.0",
+  "policy_version": "BOUNDED_SAGA_RECOVERY_V2",
+  "config_digest": "67c154fa71037809f5930dd8ce5c0163c5f9688193dcc8e27afab80a9cb1a57c",
+  "hosted_test": "tests/integration/test_bounded_saga_recovery_governor_hosted.py::test_hosted_real_inference_smoke",
+  "setup_evidence": {
+    "deployment_execution_asserted": true,
+    "open_workflow_finalized_and_execution_succeeded": true,
+    "freeze_failure_summary_finalized_and_execution_succeeded": true,
+    "three_step_reports_finalized_and_execution_succeeded": true,
+    "workflow_status_after_failed_governance": "REPORTING",
+    "decision_count_after_failed_governance": 0,
+    "failure_summary": "Payment completed and inventory remains held, but ticket issuance failed.",
+    "step_reports": [
+      {
+        "step_id": "RESERVE_SEAT",
+        "status": "SUCCEEDED",
+        "effect_summary": "Seat 12A is reserved and remains held for this booking."
+      },
+      {
+        "step_id": "CHARGE_PAYMENT",
+        "status": "SUCCEEDED",
+        "effect_summary": "The customer's card was charged and funds were captured irreversibly."
+      },
+      {
+        "step_id": "ISSUE_TICKET",
+        "status": "FAILED",
+        "effect_summary": "Ticket issuance failed before any ticket identifier was created."
+      }
+    ]
+  },
+  "governance_transaction": {
+    "transaction_id": "0xd2d3c2519a0b05f1af5796fe57e8a2d2a65bcc59f795a398c6395fa09d3181b3",
+    "tx_execution_hash": "0xc0b2f9376ba2411d5017fda7d771085556f5cba6015837df1eb76d219a6c3544",
+    "created_at": "2026-08-12T14:21:04.420161Z",
+    "terminal_status": "FINALIZED",
+    "terminal_result": "MAJORITY_DISAGREE",
+    "rounds": 4,
+    "last_round": {
+      "round": 3,
+      "votes_committed": 5,
+      "votes_revealed": 5,
+      "validator_votes": [
+        "DISAGREE",
+        "DISAGREE",
+        "IDLE",
+        "IDLE",
+        "DISAGREE"
+      ]
+    },
+    "leader_execution_result": "SUCCESS",
+    "leader_proposal": {
+      "status": "PLAN_SELECTED",
+      "reason_code": "UNIQUE_RECOVERY_MATCH",
+      "plan_id": "REFUND_AND_RELEASE",
+      "matched_step_ids": [
+        "CHARGE_PAYMENT",
+        "ISSUE_TICKET",
+        "RESERVE_SEAT"
+      ]
+    },
+    "leader_stderr": "Pickling-storage warning while reading storage in nondeterministic mode.",
+    "validator_summary": {
+      "successful_disagree_executions": 3,
+      "idle_executions_cancelled_after_quorum": 2,
+      "validator_stdout_exposed": false,
+      "audit_llm_outputs_exposed": false,
+      "successful_validator_stderr": "Only the same pickling-storage warning was exposed.",
+      "idle_validator_error_code": "CONSENSUS_VALIDATOR_QUORUM_REACHED"
+    }
+  },
+  "diagnosis": "The fixture said captured funds were irreversible while the leader selected a refund plan. That is a materially contradictory evidence phrase and plausibly explains the validator rejections. The contract source did not fail execution and was not changed; the hosted fixture was corrected to describe captured funds as refundable before the next run.",
+  "test_outcome": "FAILED_AFTER_482.47_SECONDS",
+  "proof_scope": "Truthful negative hosted-consensus evidence only. This record proves neither a finalized recovery decision nor validator agreement and must not be submitted as positive deployment evidence.",
+  "recorded_date": "2026-08-12"
+}
