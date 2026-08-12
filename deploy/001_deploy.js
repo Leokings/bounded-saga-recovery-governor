@@ -44,6 +44,7 @@ const plans = [{
   forbidden_succeeded_steps: [],
 }];
 const ARGS = ["PAYMENT-ACCESS-SAGA", "V1", JSON.stringify(steps), JSON.stringify(plans)];
+const EXPECTED_CONTRACT_VERSION = "0.2.1";
 
 const json = (value) => JSON.stringify(
   value,
@@ -114,6 +115,7 @@ export default async function deploy(client) {
   const schema = await retry("schema readback", () => client.getContractSchema(address));
   for (const method of METHODS) if (!schema?.methods?.[method]) throw new Error(`Missing ABI method ${method}`);
   const policy = await client.readContract({ address, functionName: "get_policy", args: [], jsonSafeReturn: true, transactionHashVariant: "latest-final" });
+  if (policy?.contract_version !== EXPECTED_CONTRACT_VERSION) throw new Error(`Unexpected contract version: ${policy?.contract_version}`);
   const result = {
     network: "bradbury", address, deployment_transaction: transaction,
     source_sha256: createHash("sha256").update(code, "utf8").digest("hex"),

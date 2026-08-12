@@ -1,3 +1,4 @@
+import ast
 import json
 from pathlib import Path
 
@@ -176,7 +177,7 @@ def test_policy_is_immutable_canonical_and_bounded(
     )
     policy = contract.get_policy()
 
-    assert policy["contract_version"] == "0.2.0"
+    assert policy["contract_version"] == "0.2.1"
     assert policy["policy_version"] == "BOUNDED_SAGA_RECOVERY_V2"
     assert policy["scope"] == "ONE_FAILED_WORKFLOW_ONE_PRE_REGISTERED_RECOVERY_PLAN"
     assert policy["workflow_id"] == "FLIGHT-BOOKING-SAGA"
@@ -951,3 +952,28 @@ def test_oversized_model_response_fails_closed(
     with direct_vm.expect_revert("RESPONSE_LIMIT"):
         contract.govern_recovery("SAGA-001")
     assert contract.get_decision_count() == 0
+
+
+def test_nondeterministic_callbacks_do_not_read_contract_storage():
+    """Bradbury rejects `self` storage reads from nondeterministic callbacks."""
+
+    module = ast.parse(CONTRACT_PATH.read_text(encoding="utf-8"))
+    govern = next(
+        node
+        for node in ast.walk(module)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name == "govern_recovery"
+    )
+    callbacks = {
+        node.name: node
+        for node in govern.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    assert {"leader_fn", "validator_fn"}.issubset(callbacks)
+    for callback in callbacks.values():
+        captured_contract_references = [
+            node
+            for node in ast.walk(callback)
+            if isinstance(node, ast.Name) and node.id == "self"
+        ]
+        assert captured_contract_references == []

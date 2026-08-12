@@ -69,6 +69,7 @@ def test_hosted_real_inference_smoke():
         account=accounts[0],
         wait_transaction_status=TransactionStatus.FINALIZED,
     )
+    assert contract.get_policy(args=[]).call()["contract_version"] == "0.2.1"
     reference = "SAGA-HOSTED-001"
     open_receipt = contract.open_workflow(args=[reference]).transact(
         wait_transaction_status=TransactionStatus.FINALIZED

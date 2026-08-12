@@ -1,0 +1,160 @@
+{
+  "record_type": "finalized_hosted_deployment_verification",
+  "record_status": "current",
+  "submission_eligible_for_current_source": true,
+  "network": "studionet",
+  "chain_id": 61999,
+  "rpc_url": "https://studio.genlayer.com/api",
+  "contract_address": "0x61a4a6aa81FD35Eac057244F7Cc8fD01167ECdfF",
+  "contract_version": "0.2.1",
+  "policy_version": "BOUNDED_SAGA_RECOVERY_V2",
+  "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
+  "contract_source_sha256": "00050b640db0c2c944fdd7aeb2d70c1715eedd635272478314fa74ec0c9209a4",
+  "contract_source_bytes": 37980,
+  "deployed_source_readback": {
+    "rpc_method": "gen_getContractCode",
+    "encoding": "base64",
+    "sha256": "00050b640db0c2c944fdd7aeb2d70c1715eedd635272478314fa74ec0c9209a4",
+    "bytes": 37980,
+    "exact_bytes_equal": true
+  },
+  "hosted_test": {
+    "test": "tests/integration/test_bounded_saga_recovery_governor_hosted.py::test_hosted_real_inference_smoke",
+    "command": "gltest tests/integration/test_bounded_saga_recovery_governor_hosted.py -v -s --network studionet",
+    "real_inference": true,
+    "mocked_inference": false,
+    "leader_only": false,
+    "execution": "PASSED",
+    "pytest_duration_seconds": 369.23,
+    "deployment_transaction_id_exposed_by_test_output": false,
+    "setup_transaction_ids_exposed_by_test_output": false,
+    "setup_finalized_execution_success_assertions": 6,
+    "contract_version_readback_asserted": "0.2.1",
+    "operations_before_governance": [
+      "deploy",
+      "open_workflow",
+      "freeze_failure_summary",
+      "submit_step_report:RESERVE_SEAT",
+      "submit_step_report:CHARGE_PAYMENT",
+      "submit_step_report:ISSUE_TICKET"
+    ],
+    "infrastructure_retry": {
+      "attempts": 2,
+      "first_attempt_result": "RPC_RATE_LIMIT_DURING_RECEIPT_POLL",
+      "first_attempt_rpc_code": -32029,
+      "first_attempt_limit": "30 requests per minute",
+      "contract_or_consensus_rejection_observed": false,
+      "retry_changed_contract_or_fixture": false
+    }
+  },
+  "governance_receipt": {
+    "transaction_id": "0x80c671ea71f1331694a02fdd5d9f52ae9ac4c63b9049824b8915d7e2362a16ee",
+    "status": "FINALIZED",
+    "result": "MAJORITY_AGREE",
+    "rounds": 3,
+    "last_round_index": 2,
+    "votes_committed": 5,
+    "votes_revealed": 5,
+    "agree_count": 3,
+    "disagree_count": 2,
+    "leader_execution_result": "SUCCESS",
+    "leader_output": {
+      "status": "PLAN_SELECTED",
+      "reason_code": "UNIQUE_RECOVERY_MATCH",
+      "plan_id": "REFUND_AND_RELEASE",
+      "matched_step_ids": [
+        "CHARGE_PAYMENT",
+        "ISSUE_TICKET",
+        "RESERVE_SEAT"
+      ]
+    }
+  },
+  "durable_policy_readback": {
+    "contract_version": "0.2.1",
+    "controller": "0x9dddb812865b8a54f86a7cec96c1d4667faeba59",
+    "workflow_id": "FLIGHT-BOOKING-SAGA",
+    "workflow_version": "WORKFLOW-V2",
+    "scope": "ONE_FAILED_WORKFLOW_ONE_PRE_REGISTERED_RECOVERY_PLAN",
+    "reporter_identity_policy": "ONE_UNIQUE_ADDRESS_PER_STEP",
+    "config_digest": "f44773a6ce3176d86e2185e18a084ce94089fd7cf690a5e3a255ec0d931bdcb9",
+    "max_prompt_bytes": 30000,
+    "max_reports_json_bytes": 26000,
+    "max_effect_bytes": 800,
+    "max_failure_summary_bytes": 800,
+    "worst_case_leader_prompt_bytes": 9510,
+    "worst_case_audit_prompt_bytes": 9096
+  },
+  "durable_decision_readback": {
+    "workflow_status": "DECIDED",
+    "decision_count": 1,
+    "decision_id": 1,
+    "status": "PLAN_SELECTED",
+    "reason_code": "UNIQUE_RECOVERY_MATCH",
+    "plan_id": "REFUND_AND_RELEASE",
+    "matched_step_ids": [
+      "CHARGE_PAYMENT",
+      "ISSUE_TICKET",
+      "RESERVE_SEAT"
+    ],
+    "failure_summary": "Payment was captured and remains refundable, inventory remains held, and ticket issuance failed.",
+    "failure_summary_digest": "d7f0eb1d5302a13ecaaa27189f0e60649e4e39652372a57d8769167fc5e267aa",
+    "reports_digest": "05e030a03c97d9256b2fa132ececc8d5f5479f2867a5773a771abd9ffd5d4308",
+    "request_digest": "b86799cc580de8694b9a32076756e06fc578c22c79aaa52534952655f7daef8b",
+    "decision_digest": "44d7ffe55b780d98ceb62b898c10d66c8ef85029919c8f4bf8bc8ecdef9eea3e"
+  },
+  "validator_evidence": {
+    "receipt_exposed_validator_votes": true,
+    "receipt_exposed_model_configuration": true,
+    "configured_model_and_provider_diversity_observed": true,
+    "heterogeneous_model_execution_established": false,
+    "private_keys_retained": false,
+    "configured_validator_slots": [
+      {
+        "address": "0x77AcceF9eb2B11DA3D2071F2fBC2396AD941f697",
+        "vote": "AGREE",
+        "primary_model": "policy:prd-minimax",
+        "primary_provider": "llm-router",
+        "secondary_model": "google/gemini-3-flash-preview",
+        "secondary_provider": "openrouter"
+      },
+      {
+        "address": "0x98519402C343C310f9f08331BB85b51790856B55",
+        "vote": "AGREE",
+        "primary_model": "google/gemini-3-flash-preview",
+        "primary_provider": "openrouter",
+        "secondary_model": "policy:prd-gpt-5-4",
+        "secondary_provider": "llm-router"
+      },
+      {
+        "address": "0xF9ce48dc10ebA96080a5D25dab7DE36CcA26146E",
+        "vote": "DISAGREE",
+        "primary_model": "openai/gpt-5.4",
+        "primary_provider": "openrouter",
+        "secondary_model": "policy:prd-gpt-5-4",
+        "secondary_provider": "llm-router"
+      },
+      {
+        "address": "0xaB4203368734587D1d9eaDD59f9f4a211329B19d",
+        "vote": "AGREE",
+        "primary_model": "policy:prd-qwen",
+        "primary_provider": "llm-router",
+        "secondary_model": "openai/gpt-5.4",
+        "secondary_provider": "openrouter"
+      },
+      {
+        "address": "0xaC93f1a42D9448eD28Db13Bef50460094034566B",
+        "vote": "DISAGREE",
+        "primary_model": "policy:prd-deepseek",
+        "primary_provider": "llm-router",
+        "secondary_model": "anthropic/claude-sonnet-4.6",
+        "secondary_provider": "openrouter"
+      }
+    ],
+    "bounded_claim": "The finalized receipt exposed five configured validator slots, five committed and revealed votes, three agree votes, and two disagree votes. Policy-router aliases may dynamically select an underlying backend, so the retained configuration proves configured diversity but not the exact backend that executed every validation."
+  },
+  "supersedes": "deployments/studionet-2026-08-12-current-proof.json",
+  "supersedes_note": "The superseded record covers contract version 0.2.0 and is not current-source submission evidence.",
+  "negative_predecessor_record": "deployments/studionet-2026-08-12-no-majority.json",
+  "negative_predecessor_note": "The earlier contradictory-evidence 0.2.0 run remains preserved as submission-ineligible negative evidence.",
+  "recorded_date": "2026-08-12"
+}

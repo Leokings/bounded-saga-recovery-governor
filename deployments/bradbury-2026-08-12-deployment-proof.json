@@ -1,0 +1,134 @@
+{
+  "record_type": "superseded_finalized_bradbury_deployment_and_failed_smoke",
+  "evidence_scope": "HISTORICAL_V0_2_0_REGRESSION_EVIDENCE",
+  "submission_eligible_for_current_source": false,
+  "superseded_by_contract_version": "0.2.1",
+  "superseded_by_source_sha256": "00050b640db0c2c944fdd7aeb2d70c1715eedd635272478314fa74ec0c9209a4",
+  "source_and_deployment_evidence_eligible": false,
+  "semantic_smoke_evidence_eligible": false,
+  "network": "bradbury",
+  "chain_id": 4221,
+  "rpc_url": "https://rpc-bradbury.genlayer.com",
+  "explorer_url": "https://explorer-bradbury.genlayer.com/address/0xFEc7EB1652279FE2e429A846947d5214de8C84b2",
+  "contract_address": "0xFEc7EB1652279FE2e429A846947d5214de8C84b2",
+  "deployment_transaction": "0xc6d56a510fd69d05a05d89e7586802af410ebf39a986ddc2a2c30d1361e99ce8",
+  "deployment_created_utc": "2026-08-12T15:21:00Z",
+  "deployment_last_vote_utc": "2026-08-12T15:21:39Z",
+  "contract_source": {
+    "local_sha256": "d739f2f75f68b73a5f5ead8e9aad867ef9272cbf260fb2415102d927716137fb",
+    "local_bytes": 37710,
+    "deployed_readback_sha256": "d739f2f75f68b73a5f5ead8e9aad867ef9272cbf260fb2415102d927716137fb",
+    "deployed_readback_bytes": 37710,
+    "exact_bytes_equal": true,
+    "deployment_input_bytes": 38403
+  },
+  "constructor_args": {
+    "workflow_id": "PAYMENT-ACCESS-SAGA",
+    "workflow_version": "V1",
+    "step_catalog": [
+      {
+        "id": "CAPTURE_PAYMENT",
+        "description": "Capture the customer payment with the payment service.",
+        "reporter": "0x797d3b25fb2cca0ff93f60df1910267f3822d655"
+      },
+      {
+        "id": "ISSUE_ACCESS",
+        "description": "Issue the customer access entitlement after payment succeeds.",
+        "reporter": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2"
+      }
+    ],
+    "recovery_catalog": [
+      {
+        "id": "REFUND_CAPTURED_PAYMENT",
+        "description": "Refund the captured payment after access issuance fails.",
+        "when_effects": "Payment was captured, but no access entitlement was created.",
+        "required_succeeded_steps": [
+          "CAPTURE_PAYMENT"
+        ],
+        "required_failed_steps": [
+          "ISSUE_ACCESS"
+        ],
+        "forbidden_succeeded_steps": []
+      }
+    ]
+  },
+  "durable_policy_readback": {
+    "config_digest": "be8480cdc987be3d3abafcfb29dd68dbe07cc175268cd8447df1a2e1e2fd4deb",
+    "contract_version": "0.2.0",
+    "policy_version": "BOUNDED_SAGA_RECOVERY_V2",
+    "controller": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+    "scope": "ONE_FAILED_WORKFLOW_ONE_PRE_REGISTERED_RECOVERY_PLAN",
+    "reporter_identity_policy": "ONE_UNIQUE_ADDRESS_PER_STEP",
+    "max_effect_bytes": 800,
+    "max_failure_summary_bytes": 800,
+    "max_prompt_bytes": 30000,
+    "max_reports_json_bytes": 26000,
+    "worst_case_leader_prompt_bytes": 7188,
+    "worst_case_audit_prompt_bytes": 6762
+  },
+  "deployment_receipt": {
+    "transaction_id": "0xc6d56a510fd69d05a05d89e7586802af410ebf39a986ddc2a2c30d1361e99ce8",
+    "sender": "0x87e94EDAb4418e8A9eA37c0FAb0675Cf0602A9F2",
+    "recipient": "0xFEc7EB1652279FE2e429A846947d5214de8C84b2",
+    "status": "FINALIZED",
+    "result": "AGREE",
+    "execution_result": "FINISHED_WITH_RETURN",
+    "transaction_execution_hash": "0x8681a5e726d2b7c2e17dce04ba0d60c69bb8dc8c071c7a544ac88f95791efc9b",
+    "initial_validator_target": 3,
+    "consumed_validator_count": 5,
+    "observed_round_index": 0,
+    "observed_round_count": 1,
+    "votes_committed": 5,
+    "votes_revealed": 5,
+    "validator_vote_counts": {
+      "AGREE": 5,
+      "DISAGREE": 0,
+      "DETERMINISTIC_VIOLATION": 0
+    },
+    "validator_result_hashes_equal": true
+  },
+  "validator_claim_boundary": {
+    "five_commit_reveal_votes_observed": true,
+    "independent_validator_execution_established": false,
+    "heterogeneous_model_execution_established": false,
+    "model_or_provider_identities_claimed": false,
+    "bounded_claim": "The finalized deployment receipt records five committed and revealed AGREE votes with one shared result hash. This deployment-only record does not establish validator independence, model diversity, or semantic decision quality."
+  },
+  "smoke_workflow": {
+    "status": "FAILED_CLOSED",
+    "transactions_recorded": [
+      "0xa99c6f8e79966271858cf474f6f492dd4a2a8e05dcd865ec47afe6228e67e37d",
+      "0xd5fcc7480b664143cf02a192edb4ff865485c52f3702e557e49294fffba1eb51",
+      "0x52ae07288f282a4b33da424d6bfde035276e601714e483b385939109966a5943",
+      "0x77f33dbfa2069937af82f8a1977206f5cc3b8b81ef17ccbf61925eeb54a3aaef",
+      "0x18b32ad42b88116c04dbfca0503e53b5098cec876dccf0a5620f35d8f654024d"
+    ],
+    "decision_claimed": false,
+    "durable_setup_state": {
+      "workflow_status": "REPORTING",
+      "step_reports_present": 2,
+      "decision_count": 0
+    },
+    "failed_govern_recovery": {
+      "status": "UNDETERMINED",
+      "result": "DISAGREE",
+      "execution_result": "FINISHED_WITH_ERROR",
+      "votes_committed": 5,
+      "votes_revealed": 5,
+      "vote_counts": {
+        "DETERMINISTIC_VIOLATION": 5
+      },
+      "llm_calls_observed_in_trace": 0,
+      "stderr_summary": "GenVM warned that reading contract storage in nondeterministic mode is unsupported.",
+      "decision_state_written": false
+    },
+    "note": "The immutable v0.2.0 deployment is retained as negative regression evidence. govern_recovery indirectly read self.workflow_id through bound contract methods inside nondeterministic execution and failed before inference. Version 0.2.1 copies immutable values into ordinary locals and uses storage-free module helpers; it requires a new deployment."
+  },
+  "sanitization": {
+    "raw_contract_source_omitted": true,
+    "raw_transaction_calldata_omitted": true,
+    "full_raw_receipt_omitted": true,
+    "private_keys_present": false
+  },
+  "recorded_date": "2026-08-12"
+}

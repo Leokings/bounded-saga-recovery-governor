@@ -10,7 +10,7 @@ import json
 from typing import NoReturn
 
 
-CONTRACT_VERSION = "0.2.0"
+CONTRACT_VERSION = "0.2.1"
 POLICY_VERSION = "BOUNDED_SAGA_RECOVERY_V2"
 SCOPE = "ONE_FAILED_WORKFLOW_ONE_PRE_REGISTERED_RECOVERY_PLAN"
 DIGEST_DOMAIN = "GENLAYER_BOUNDED_SAGA_RECOVERY_GOVERNOR"
@@ -548,6 +548,60 @@ def _results_equal(first: dict, second: dict) -> bool:
     )
 
 
+def _evaluate_recovery(
+    workflow_id: str,
+    steps: list[dict],
+    reports: list[dict],
+    failure_summary: str,
+    eligible: list[dict],
+) -> dict:
+    """Evaluate plain local values without reading contract storage."""
+
+    return _validate_model_result(
+        _parse_llm_json(
+            _decision_prompt(workflow_id, steps, reports, failure_summary, eligible)
+        ),
+        eligible,
+        reports,
+    )
+
+
+def _validate_recovery_leader(
+    workflow_id: str,
+    leader_result,
+    steps: list[dict],
+    reports: list[dict],
+    failure_summary: str,
+    eligible: list[dict],
+) -> bool:
+    """Audit a leader proposal using only plain local values."""
+
+    try:
+        candidate = _validate_model_result(leader_result, eligible, reports)
+    except gl.vm.UserError:
+        return False
+    if not _results_equal(leader_result, candidate):
+        return False
+    try:
+        audit = _parse_llm_json(
+            _audit_prompt(
+                workflow_id,
+                steps,
+                reports,
+                failure_summary,
+                eligible,
+                candidate,
+            )
+        )
+    except gl.vm.UserError:
+        return False
+    return (
+        set(audit.keys()) == {"accept"}
+        and isinstance(audit.get("accept"), bool)
+        and audit.get("accept") is True
+    )
+
+
 class BoundedSagaRecoveryGovernor(gl.Contract):
     controller: Address
     workflow_id: str
@@ -609,54 +663,6 @@ class BoundedSagaRecoveryGovernor(gl.Contract):
             ],
         )
         self.decision_count = 0
-
-    def _evaluate(
-        self,
-        steps: list[dict],
-        reports: list[dict],
-        failure_summary: str,
-        eligible: list[dict],
-    ) -> dict:
-        return _validate_model_result(
-            _parse_llm_json(
-                _decision_prompt(self.workflow_id, steps, reports, failure_summary, eligible)
-            ),
-            eligible,
-            reports,
-        )
-
-    def _validate_leader(
-        self,
-        leader_result,
-        steps: list[dict],
-        reports: list[dict],
-        failure_summary: str,
-        eligible: list[dict],
-    ) -> bool:
-        try:
-            candidate = _validate_model_result(leader_result, eligible, reports)
-        except gl.vm.UserError:
-            return False
-        if not _results_equal(leader_result, candidate):
-            return False
-        try:
-            audit = _parse_llm_json(
-                _audit_prompt(
-                    self.workflow_id,
-                    steps,
-                    reports,
-                    failure_summary,
-                    eligible,
-                    candidate,
-                )
-            )
-        except gl.vm.UserError:
-            return False
-        return (
-            set(audit.keys()) == {"accept"}
-            and isinstance(audit.get("accept"), bool)
-            and audit.get("accept") is True
-        )
 
     @gl.public.view
     def get_policy(self) -> dict:
@@ -925,15 +931,21 @@ class BoundedSagaRecoveryGovernor(gl.Contract):
         )
         if request_digest in self.seen_request_digests:
             _expected("REQUEST_REPLAY")
+        # GenVM forbids contract-storage reads from nondeterministic execution.
+        # Copy the immutable workflow ID into a plain local before consensus.
+        workflow_id = self.workflow_id
 
         def leader_fn():
-            return self._evaluate(steps, reports, canonical_failure, eligible)
+            return _evaluate_recovery(
+                workflow_id, steps, reports, canonical_failure, eligible
+            )
 
         def validator_fn(leader_result) -> bool:
             if not isinstance(leader_result, gl.vm.Return):
                 return False
             try:
-                return self._validate_leader(
+                return _validate_recovery_leader(
+                    workflow_id,
                     leader_result.calldata,
                     steps,
                     reports,

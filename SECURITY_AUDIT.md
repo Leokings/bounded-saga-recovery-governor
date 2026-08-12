@@ -2,7 +2,7 @@
 
 Date: 2026-08-12  
 Scope: `contracts/BoundedSagaRecoveryGovernor.py` and its direct/integration tests  
-Status: local audit and current-source StudioNet validation complete; Bradbury validation pending
+Status: v0.2.1 local audit, StudioNet validation, and scoped Bradbury deployment/smoke review complete
 
 ## Method
 
@@ -12,7 +12,7 @@ Status: local audit and current-source StudioNet validation complete; Bradbury v
 - prompt-injection and fail-closed review;
 - GenVM lint and SDK semantic validation;
 - Pyright typecheck;
-- direct negative/adversarial tests; and
+- direct negative/adversarial tests, including an AST guard against callback storage capture; and
 - five-validator GLSim consensus tests.
 
 ## Findings fixed during implementation
@@ -20,6 +20,7 @@ Status: local audit and current-source StudioNet validation complete; Bradbury v
 | Severity | Finding | Resolution |
 |---|---|---|
 | High | A controller-supplied reporter label would not authenticate the source of a step effect | Replaced with separate `submit_step_report` calls authenticated by `gl.message.sender_address` against immutable per-step addresses |
+| High | Bound contract methods used as nondeterministic callbacks indirectly read `self.workflow_id`; Bradbury v0.2.0 therefore failed before inference because GenVM forbids contract-storage reads in nondeterministic mode | Version 0.2.1 copies the immutable workflow ID into a plain local before consensus, uses storage-free module-level leader/validator helpers, and adds an AST regression test proving neither callback captures `self` |
 | Medium | Authorized reporters could create unlimited unopened request-reference storage | Added controller-only `open_workflow`; reports for unopened references fail before storage mutation |
 | Medium | A semantic model could otherwise select a plan whose deterministic status prerequisites do not hold | Only structurally eligible plans enter the prompt; returned plan IDs are checked against that filtered set |
 | Medium | Individually valid catalogs and reports could exceed the prompt ceiling and strand an immutable reference | Added UTF-8 byte limits, conservative constructor-time worst-case leader/audit budgets, stored budget evidence, and runtime prompt checks |
@@ -43,7 +44,7 @@ Status: local audit and current-source StudioNet validation complete; Bradbury v
 |---:|---:|---:|---:|
 | 0 | 0 | 0 | 0 |
 
-Remediated finding groups: 17 total (1 High, 10 Medium, 6 Low).
+Remediated finding groups: 18 total (2 High, 10 Medium, 6 Low).
 
 The documented trust assumptions in `SECURITY.md` are product boundaries, not fixed vulnerabilities: reporters attest to effects, validators can share correlated errors, catalog quality matters, and plan execution remains external.
 
@@ -54,14 +55,18 @@ Update only from captured command output:
 ```text
 genvm-lint check: PASS
 genvm-lint typecheck: PASS
-pytest direct: 46 passed
+pytest direct: 47 passed
 five-validator GLSim for current source: PASSED 3/3 with five explicit mock validators
-StudioNet: PASSED no-mock hosted smoke; exact source at 0x63b9443113dD49213761aC6785FCD43268A8e3Af; MAJORITY_AGREE 3/2
-Bradbury: PENDING
-current contract size: 37,710 bytes
-current contract SHA-256: d739f2f75f68b73a5f5ead8e9aad867ef9272cbf260fb2415102d927716137fb
+StudioNet v0.2.1: PASSED no-mock hosted smoke; exact source at 0x61a4a6aa81FD35Eac057244F7Cc8fD01167ECdfF; MAJORITY_AGREE 3/2 across three rounds
+Bradbury v0.2.1: exact deployment PASS at 0xA2DDebc4CC8Eb21bb8eB45214Bfad1A4dE7A26Fd; semantic smoke NO_MAJORITY with no decision persisted
+current contract size: 37,980 bytes
+current contract SHA-256: 00050b640db0c2c944fdd7aeb2d70c1715eedd635272478314fa74ec0c9209a4
 ```
 
 Verified tool versions: Python 3.13.9, `genvm-linter` 0.11.0, `genlayer-test` 0.29.2, pytest 8.4.2, and Pyright 1.1.410.
 
-The current-source three-test GLSim run used five prompt-specific mock validators and proved consensus plumbing, result validation, storage transitions, and caller authorization. It did not prove heterogeneous real-model accuracy or prompt-injection resistance. The no-mock current-source StudioNet smoke finalized a bounded recovery decision by a three-agree/two-disagree majority and persisted the expected digest-linked state; it was not unanimous. The retained negative predecessor finalized `MAJORITY_DISAGREE` on a materially contradictory evidence corpus and persisted no decision. These two hosted records establish only their observed transactions, not general semantic accuracy or prompt-injection immunity.
+The v0.2.1 three-test GLSim run used five prompt-specific mock validators and proved consensus plumbing, result validation, storage transitions, caller authorization, and the storage-free callback shape. It did not prove heterogeneous real-model accuracy or prompt-injection resistance. The no-mock current-source StudioNet smoke finalized a bounded recovery decision by a three-agree/two-disagree majority across three rounds and persisted the expected digest-linked state; it was not unanimous. The retained configured validator slots show configured model/provider diversity, but policy-router aliases prevent a claim about the exact backend that executed every validation.
+
+The current-source Bradbury deployment finalized with five `AGREE` votes and exact source equality. Its deterministic setup transactions executed successfully and were accepted, but its first semantic attempt ended `VALIDATORS_TIMEOUT` and the single govern-only retry ended `NO_MAJORITY`; durable state remained `REPORTING` with zero decisions. Public replay traces returned successfully with no runtime or storage warning, so the v0.2.0 nondeterministic storage-read defect did not recur. The public endpoint did not expose separate validator execution logs, and its replay traces recorded zero provider calls; the deeper cause of individual `DETERMINISTIC_VIOLATION` votes and live LLM execution are therefore not claimed. This is positive exact-deployment evidence and negative semantic-smoke evidence, while StudioNet supplies the positive current-source semantic result.
+
+All other retained hosted records describe superseded v0.2.0. The older positive StudioNet record and separate contradictory-evidence negative record establish only their historical transactions. The v0.2.0 Bradbury deployment finalized, but its semantic transaction failed closed before inference with five `DETERMINISTIC_VIOLATION` votes and no decision write, exposing the nondeterministic storage-read finding fixed in v0.2.1. None of those v0.2.0 records is submission evidence for the current source.

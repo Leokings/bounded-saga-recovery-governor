@@ -148,6 +148,7 @@ See [examples/step-catalog.json](examples/step-catalog.json), [examples/recovery
 - no model-generated plan identifiers, methods, targets, calldata, or payments;
 - explicit `MANUAL_HALT` and `AMBIGUOUS` fail-closed outcomes;
 - independent semantic validator audit rather than format-only validation;
+- storage-free nondeterministic callbacks: immutable workflow context is copied into plain locals before consensus and evaluated by module-level helpers;
 - length-framed domain-separated config, report, request, and decision digests;
 - one terminal decision or abandonment per request reference;
 - native value rejected on every write path.
@@ -166,7 +167,11 @@ python tests\run_glsim.py --port 4000 --validators 5 --no-browser
 gltest tests\integration -v -s --network localnet
 ```
 
-The current source has 46 passing direct tests and passed all three five-validator GLSim tests with explicit prompt-specific mocks. A no-mock StudioNet run deployed the exact 37,710-byte current source at `0x63b9443113dD49213761aC6785FCD43268A8e3Af`, finalized `PLAN_SELECTED / REFUND_AND_RELEASE`, and recorded a `MAJORITY_AGREE` receipt with three agree and two disagree votes. An earlier run against materially contradictory evidence finalized `MAJORITY_DISAGREE`; it is retained as negative evidence rather than hidden or described as a successful decision. Bradbury remains pending. See [TESTING.md](TESTING.md) and the source-bound records in [deployments/](deployments/).
+Version 0.2.1 is 37,980 bytes at SHA-256 `00050b640db0c2c944fdd7aeb2d70c1715eedd635272478314fa74ec0c9209a4`. It passes GenVM lint and type checking, 47 direct tests, and all three five-validator GLSim tests with explicit prompt-specific mocks. A no-mock StudioNet run deployed byte-identical v0.2.1 source at `0x61a4a6aa81FD35Eac057244F7Cc8fD01167ECdfF` and finalized `PLAN_SELECTED / REFUND_AND_RELEASE` by `MAJORITY_AGREE` with three agree and two disagree votes across three rounds. This is majority evidence, not unanimity.
+
+Bradbury finalized a second byte-identical v0.2.1 deployment at `0xA2DDebc4CC8Eb21bb8eB45214Bfad1A4dE7A26Fd`. Its deterministic setup transactions executed successfully and were accepted, but neither semantic attempt produced an accepted decision: the first ended `VALIDATORS_TIMEOUT`, and the one authorized govern-only retry ended `NO_MAJORITY` with final-round counts of four `AGREE`, four `TIMEOUT`, and three `DETERMINISTIC_VIOLATION`. Durable latest-final reads showed `REPORTING`, zero decisions, and both reports intact. Public replay traces returned successfully with no runtime or storage warning, but recorded zero provider calls; Bradbury is therefore exact-deployment evidence, not positive semantic-decision evidence. The StudioNet record remains the positive current-source semantic proof.
+
+The older StudioNet and Bradbury records under [deployments/](deployments/) were produced by superseded version 0.2.0 and are historical only. In particular, the v0.2.0 Bradbury deployment finalized successfully, but its semantic call failed closed before inference because bound contract methods indirectly read storage during nondeterministic execution. Version 0.2.1 removes those reads by passing plain local values to module-level helpers. The older addresses and receipts must not be presented as current-source deployment evidence. See [TESTING.md](TESTING.md) for the exact evidence boundary.
 
 ## Reuse
 

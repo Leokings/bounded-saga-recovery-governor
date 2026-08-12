@@ -1,6 +1,9 @@
 {
   "record_type": "finalized_hosted_deployment_verification",
-  "submission_eligible_for_current_source": true,
+  "record_status": "superseded",
+  "submission_eligible_for_current_source": false,
+  "superseded_by": "deployments/studionet-2026-08-12-v0.2.1-proof.json",
+  "superseded_reason": "This proof covers contract version 0.2.0 and the 37,710-byte source. It does not prove the current 0.2.1 source.",
   "network": "studionet",
   "chain_id": 61999,
   "rpc_url": "https://studio.genlayer.com/api",
