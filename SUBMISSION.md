@@ -1,6 +1,6 @@
 # Portal submission draft
 
-Current-source v0.2.1 evidence is captured below. StudioNet supplies the positive semantic-consensus result. Bradbury supplies a finalized byte-identical deployment, while its semantic retry ended `NO_MAJORITY` and persisted no decision.
+Current-source v0.2.1 evidence is captured below. StudioNet and Bradbury both supply finalized positive semantic-consensus results; the Bradbury proof also preserves three earlier failed-closed attempts.
 
 ## Contribution Date
 
@@ -17,7 +17,7 @@ Bounded Saga Recovery Governor - Reusable Intelligent Contract
 ## Notes / Description
 
 ```text
-Built an MIT-licensed Bounded Saga Recovery Governor for partially failed workflows. Registered step addresses submit authenticated statuses and bounded effects; reports, not controller prose, are authoritative. Code requires mixed success/failure and filters a closed recovery catalog before consensus returns PLAN_SELECTED, MANUAL_HALT, or AMBIGUOUS. It never executes callbacks, transfers, or model-generated actions. v0.2.1 uses storage-free callbacks, immutable reports, replay protection, abandonment, digests, prompt budgets, and capped responses. It passes GenVM checks, 47 direct tests, and 3 five-validator mocked GLSim tests. A no-mock StudioNet run deployed byte-identical source at 0x61a4a6aa81FD35Eac057244F7Cc8fD01167ECdfF and finalized REFUND_AND_RELEASE by MAJORITY_AGREE: 3 agree, 2 disagree, 3 rounds. Bradbury finalized another byte-identical deployment at 0xA2DDebc4CC8Eb21bb8eB45214Bfad1A4dE7A26Fd; its semantic retry ended NO_MAJORITY and persisted no decision.
+Built an MIT-licensed Bounded Saga Recovery Governor for partially failed workflows. Registered step addresses submit authenticated statuses and bounded effects; reports, not controller prose, are authoritative. Deterministic code requires mixed success/failure and filters a closed recovery catalog before consensus returns PLAN_SELECTED, MANUAL_HALT, or AMBIGUOUS. It never executes callbacks, transfers, or model-generated actions. v0.2.1 adds storage-free callbacks, immutable reports, replay protection, abandonment, digests, prompt budgets, and capped responses. It passes GenVM checks, 47 direct tests, and 3 five-validator mocked GLSim tests. Byte-identical source passed no-mock StudioNet and finalized on Bradbury at 0xA2DDebc4CC8Eb21bb8eB45214Bfad1A4dE7A26Fd. After three disclosed nonaccepted attempts using underspecified evidence, a new explicit-evidence workflow finalized 4/5 AGREE and durably selected REFUND_CAPTURED_PAYMENT with UNIQUE_RECOVERY_MATCH.
 ```
 
 ## Evidence entries
@@ -64,7 +64,7 @@ https://explorer-bradbury.genlayer.com/address/0xA2DDebc4CC8Eb21bb8eB45214Bfad1A
 https://github.com/Leokings/bounded-saga-recovery-governor/blob/main/deployments/studionet-2026-08-12-v0.2.1-proof.json
 ```
 
-### GitHub File - Bradbury deployment and nonaccepted semantic-smoke proof
+### GitHub File - finalized Bradbury deployment and semantic-smoke proof
 
 ```text
 https://github.com/Leokings/bounded-saga-recovery-governor/blob/main/deployments/bradbury-2026-08-12-v0.2.1-deployment-and-smoke.json
@@ -82,7 +82,9 @@ Intelligent Contracts
 - Confirm the explorer contract source hash matches the repository source.
 - Change test counts only from fresh captured output.
 - The current StudioNet result is majority agreement (3/2), not unanimity.
-- Describe Bradbury only as a finalized exact deployment plus a nonaccepted semantic smoke; do not claim a successful Bradbury decision or independently established live LLM calls.
+- Describe Bradbury as a finalized exact deployment plus a successful explicit-evidence semantic workflow, while retaining the three prior failed-closed attempts.
+- Do not claim unanimity for the Bradbury governance decision: it received four `AGREE` and one rejecting vote.
+- Do not claim exact model identities or per-validator provider calls.
 - Do not use any v0.2.0 address or proof as current-source evidence.
 - Do not claim model identities or general heterogeneous-model accuracy from the submission text.
 - Do not claim the governor itself executes recovery actions.

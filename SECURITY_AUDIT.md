@@ -2,7 +2,7 @@
 
 Date: 2026-08-12  
 Scope: `contracts/BoundedSagaRecoveryGovernor.py` and its direct/integration tests  
-Status: v0.2.1 local audit, StudioNet validation, and scoped Bradbury deployment/smoke review complete
+Status: v0.2.1 local audit, StudioNet validation, and finalized Bradbury semantic-smoke review complete
 
 ## Method
 
@@ -58,7 +58,7 @@ genvm-lint typecheck: PASS
 pytest direct: 47 passed
 five-validator GLSim for current source: PASSED 3/3 with five explicit mock validators
 StudioNet v0.2.1: PASSED no-mock hosted smoke; exact source at 0x61a4a6aa81FD35Eac057244F7Cc8fD01167ECdfF; MAJORITY_AGREE 3/2 across three rounds
-Bradbury v0.2.1: exact deployment PASS at 0xA2DDebc4CC8Eb21bb8eB45214Bfad1A4dE7A26Fd; semantic smoke NO_MAJORITY with no decision persisted
+Bradbury v0.2.1: exact deployment PASS at 0xA2DDebc4CC8Eb21bb8eB45214Bfad1A4dE7A26Fd; explicit-evidence workflow FINALIZED 4/5 AGREE and persisted REFUND_CAPTURED_PAYMENT
 current contract size: 37,980 bytes
 current contract SHA-256: 00050b640db0c2c944fdd7aeb2d70c1715eedd635272478314fa74ec0c9209a4
 ```
@@ -67,6 +67,6 @@ Verified tool versions: Python 3.13.9, `genvm-linter` 0.11.0, `genlayer-test` 0.
 
 The v0.2.1 three-test GLSim run used five prompt-specific mock validators and proved consensus plumbing, result validation, storage transitions, caller authorization, and the storage-free callback shape. It did not prove heterogeneous real-model accuracy or prompt-injection resistance. The no-mock current-source StudioNet smoke finalized a bounded recovery decision by a three-agree/two-disagree majority across three rounds and persisted the expected digest-linked state; it was not unanimous. The retained configured validator slots show configured model/provider diversity, but policy-router aliases prevent a claim about the exact backend that executed every validation.
 
-The current-source Bradbury deployment finalized with five `AGREE` votes and exact source equality. Its deterministic setup transactions executed successfully and were accepted, but its first semantic attempt ended `VALIDATORS_TIMEOUT` and the single govern-only retry ended `NO_MAJORITY`; durable state remained `REPORTING` with zero decisions. Public replay traces returned successfully with no runtime or storage warning, so the v0.2.0 nondeterministic storage-read defect did not recur. The public endpoint did not expose separate validator execution logs, and its replay traces recorded zero provider calls; the deeper cause of individual `DETERMINISTIC_VIOLATION` votes and live LLM execution are therefore not claimed. This is positive exact-deployment evidence and negative semantic-smoke evidence, while StudioNet supplies the positive current-source semantic result.
+The current-source Bradbury deployment finalized with five `AGREE` votes and exact source equality. Three governance attempts for the first evidence reference failed closed and wrote no decision: `VALIDATORS_TIMEOUT`, `NO_MAJORITY`, and finalized `DISAGREE`. A new explicit-evidence reference then finalized four setup writes unanimously and finalized governance with four `AGREE` votes and one `DETERMINISTIC_VIOLATION`. Latest-final state is `DECIDED` with decision `1`, `PLAN_SELECTED / UNIQUE_RECOVERY_MATCH / REFUND_CAPTURED_PAYMENT`, and digest-linked authenticated reports. This establishes positive current-source Bradbury semantic behavior while truthfully preserving the negative attempts. Public receipts do not expose every validator's private provider log, so no exact model identity or per-validator LLM-call claim is made.
 
 All other retained hosted records describe superseded v0.2.0. The older positive StudioNet record and separate contradictory-evidence negative record establish only their historical transactions. The v0.2.0 Bradbury deployment finalized, but its semantic transaction failed closed before inference with five `DETERMINISTIC_VIOLATION` votes and no decision write, exposing the nondeterministic storage-read finding fixed in v0.2.1. None of those v0.2.0 records is submission evidence for the current source.

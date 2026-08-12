@@ -1,13 +1,13 @@
 {
-  "record_type": "current_source_bradbury_deployment_and_nonaccepted_semantic_smoke",
+  "record_type": "current_source_bradbury_deployment_and_successful_semantic_smoke",
   "record_status": "current",
   "evidence_scope": {
     "exact_deployment": "POSITIVE_FINALIZED",
-    "deterministic_setup": "POSITIVE_ACCEPTED_NOT_FINALIZED",
-    "semantic_decision": "NEGATIVE_NO_ACCEPTED_DECISION"
+    "deterministic_setup": "POSITIVE_FINALIZED",
+    "semantic_decision": "POSITIVE_FINALIZED"
   },
   "submission_eligible_for_current_source_deployment": true,
-  "submission_eligible_as_successful_bradbury_semantic_decision": false,
+  "submission_eligible_as_successful_bradbury_semantic_decision": true,
   "network": "bradbury",
   "chain_id": 4221,
   "rpc_url": "https://rpc-bradbury.genlayer.com",
@@ -68,7 +68,7 @@
         "operation": "open_workflow",
         "transaction_id": "0x26e618b8a70ef5c9f0bb8dcf18f3249f1ab2f42d1df7b5539ef90e995cae616d",
         "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
-        "status": "ACCEPTED",
+        "status": "FINALIZED",
         "result": "AGREE",
         "execution_result": "FINISHED_WITH_RETURN",
         "votes_committed": 5,
@@ -79,7 +79,7 @@
         "operation": "freeze_failure_summary",
         "transaction_id": "0x080b9cd59d952634e47992fce956d9b126bc3bb6b78c493f849f9e41296e7946",
         "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
-        "status": "ACCEPTED",
+        "status": "FINALIZED",
         "result": "AGREE",
         "execution_result": "FINISHED_WITH_RETURN",
         "votes_committed": 5,
@@ -90,7 +90,7 @@
         "operation": "submit_step_report:ISSUE_ACCESS",
         "transaction_id": "0xaabf5c355d72e2134ad77c762e4bffb5aaab3657bb768aa443a39a9a2753f449",
         "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
-        "status": "ACCEPTED",
+        "status": "FINALIZED",
         "result": "AGREE",
         "execution_result": "FINISHED_WITH_RETURN",
         "votes_committed": 5,
@@ -101,7 +101,7 @@
         "operation": "submit_step_report:CAPTURE_PAYMENT",
         "transaction_id": "0x241e87369a87c5d921d79aa10fa694b4c088c3946375cd88f1c7b0923b8df13b",
         "sender": "0x797d3b25fb2cca0ff93f60df1910267f3822d655",
-        "status": "ACCEPTED",
+        "status": "FINALIZED",
         "result": "AGREE",
         "execution_result": "FINISHED_WITH_RETURN",
         "votes_committed": 5,
@@ -109,13 +109,14 @@
         "vote_counts": { "AGREE": 5 }
       }
     ],
-    "claim_boundary": "These four setup transactions had successful accepted execution and unanimous five-vote agreement when recorded. They had not reached FINALIZED status and are not described as finalized."
+    "claim_boundary": "All four original-reference setup transactions later reached FINALIZED with successful execution and unanimous five-vote agreement. Their semantic attempts are retained below as negative evidence."
   },
   "semantic_attempts": [
     {
       "attempt": 1,
       "transaction_id": "0x64ea0bd06333fe86e99a985c57c6b71426d9dd86f892ca3b5d7dc528cba505b6",
-      "terminal_status": "VALIDATORS_TIMEOUT",
+      "pre_finality_status": "VALIDATORS_TIMEOUT",
+      "terminal_status": "FINALIZED",
       "result": "TIMEOUT",
       "execution_result": "FINISHED_WITH_RETURN",
       "raw_num_of_rounds": 4,
@@ -132,7 +133,8 @@
     {
       "attempt": 2,
       "transaction_id": "0x031261099293f6a98cf4aed330cd67efe1139c30d8c569bad2f253ff0ab69aeb",
-      "status": "UNDETERMINED",
+      "pre_finality_status": "UNDETERMINED",
+      "status": "FINALIZED",
       "result": "NO_MAJORITY",
       "execution_result": "FINISHED_WITH_RETURN",
       "transaction_execution_hash": "0xd45a6aca977b8cb8fb92ba074999b756cb209220bff657b57b19a01de7c76364",
@@ -192,6 +194,32 @@
         }
       ],
       "decision_state_written": false
+    },
+    {
+      "attempt": 3,
+      "transaction_id": "0x7d4351f0428321b56ec0b7fb20f5f3d113e42a4f15ce3b78f7e89b8af8977605",
+      "request_reference": "BRADBURY-SAGA-V021-20260812",
+      "created_utc": "2026-08-12T18:03:55Z",
+      "last_vote_utc": "2026-08-12T18:05:52Z",
+      "finalized_utc": "2026-08-12T18:36:12Z",
+      "status": "FINALIZED",
+      "result": "DISAGREE",
+      "execution_result": "FINISHED_WITH_RETURN",
+      "transaction_execution_hash": "0xb2a6623ede91ba2dc66e84d2e3f546c3380385f4efb97d2a46e2fdb7e907beba",
+      "votes_committed": 5,
+      "votes_revealed": 5,
+      "vote_counts": {
+        "AGREE": 1,
+        "DETERMINISTIC_VIOLATION": 3,
+        "TIMEOUT": 1
+      },
+      "recorded_leader_output": {
+        "status": "PLAN_SELECTED",
+        "reason_code": "UNIQUE_RECOVERY_MATCH",
+        "plan_id": "REFUND_CAPTURED_PAYMENT",
+        "matched_step_ids": ["CAPTURE_PAYMENT", "ISSUE_ACCESS"]
+      },
+      "decision_state_written": false
     }
   ],
   "trace_review": {
@@ -215,7 +243,7 @@
     ],
     "classification": "No recurrence of the v0.2.0 nondeterministic storage-read defect was observed. All public replay traces returned successfully with empty stderr and no storage warning. DETERMINISTIC_VIOLATION votes used result hashes distinct from AGREE and TIMEOUT votes, but the public RPC did not expose individual validator execution logs, so their deeper cause is not claimed. The replay traces recorded zero provider calls; therefore this record does not claim that greater than zero LLM calls were independently established."
   },
-  "post_attempt_latest_final_readback": {
+  "post_failed_attempt_latest_final_readback": {
     "transaction_hash_variant": "latest-final",
     "workflow_status": "REPORTING",
     "decision_count": 0,
@@ -235,7 +263,125 @@
       "effect_summary": "Access issuance failed and no entitlement identifier was created."
     }
   },
-  "semantic_evidence_boundary": "Bradbury proves an exact finalized v0.2.1 deployment and successful accepted setup, but neither semantic attempt produced an accepted or finalized decision. The current-source StudioNet proof remains the positive no-mock semantic-consensus evidence.",
+  "explicit_evidence_success": {
+    "request_reference": "BRADBURY-SAGA-V021-EXPLICIT-20260812",
+    "setup_transactions": [
+      {
+        "operation": "open_workflow",
+        "transaction_id": "0xa5870268eb32bffaf62c804766c1ef8a6d0295a0911fc2b800a7aad5b5974700",
+        "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+        "status": "FINALIZED",
+        "result": "AGREE",
+        "execution_result": "FINISHED_WITH_RETURN",
+        "created_utc": "2026-08-12T18:29:34Z",
+        "finalized_utc": "2026-08-12T19:00:34Z",
+        "votes_committed": 5,
+        "votes_revealed": 5,
+        "vote_counts": {"AGREE": 5}
+      },
+      {
+        "operation": "freeze_failure_summary",
+        "transaction_id": "0x343586c5826975c1a53cf20783f10580fb4d5d57f4f7f409188a3d5f8e6651b8",
+        "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+        "status": "FINALIZED",
+        "result": "AGREE",
+        "execution_result": "FINISHED_WITH_RETURN",
+        "created_utc": "2026-08-12T18:30:56Z",
+        "finalized_utc": "2026-08-12T19:01:15Z",
+        "votes_committed": 5,
+        "votes_revealed": 5,
+        "vote_counts": {"AGREE": 5}
+      },
+      {
+        "operation": "submit_step_report:ISSUE_ACCESS",
+        "transaction_id": "0xfd40ccd4584ceea4c7ba3d28ffaca9ef000ffc7717a4aa0838d75d34c96d8e30",
+        "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+        "status": "FINALIZED",
+        "result": "AGREE",
+        "execution_result": "FINISHED_WITH_RETURN",
+        "created_utc": "2026-08-12T18:31:32Z",
+        "finalized_utc": "2026-08-12T19:03:13Z",
+        "votes_committed": 5,
+        "votes_revealed": 5,
+        "vote_counts": {"AGREE": 5}
+      },
+      {
+        "operation": "submit_step_report:CAPTURE_PAYMENT",
+        "transaction_id": "0x6837c3b0dd9800e7b6eec086797c22bce974ff71db75799b8040a0e3bbffe43e",
+        "sender": "0x797d3b25fb2cca0ff93f60df1910267f3822d655",
+        "status": "FINALIZED",
+        "result": "AGREE",
+        "execution_result": "FINISHED_WITH_RETURN",
+        "created_utc": "2026-08-12T18:33:45Z",
+        "finalized_utc": "2026-08-12T19:04:06Z",
+        "votes_committed": 5,
+        "votes_revealed": 5,
+        "vote_counts": {"AGREE": 5}
+      }
+    ],
+    "governance_transaction": {
+      "transaction_id": "0xe7f59e31809bc3db775b768a83f0e0eba42477a170b2b7ab111fc738f66d30b7",
+      "explorer_url": "https://explorer-bradbury.genlayer.com/tx/0xe7f59e31809bc3db775b768a83f0e0eba42477a170b2b7ab111fc738f66d30b7",
+      "sender": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+      "created_utc": "2026-08-12T18:35:03Z",
+      "last_vote_utc": "2026-08-12T18:37:35Z",
+      "finalized_utc": "2026-08-12T19:09:35Z",
+      "status": "FINALIZED",
+      "client_result": "AGREE",
+      "explorer_consensus_result": "MAJORITY_AGREE",
+      "execution_result": "FINISHED_WITH_RETURN",
+      "transaction_execution_hash": "0x6aac64ac0e455b6541d28f7e20619775513ff837b4734fe90309e8c07779cfdb",
+      "votes_committed": 5,
+      "votes_revealed": 5,
+      "vote_counts": {
+        "AGREE": 4,
+        "DETERMINISTIC_VIOLATION": 1
+      },
+      "validator_result_hashes_for_agree_votes_equal": true,
+      "recorded_leader_output": {
+        "status": "PLAN_SELECTED",
+        "reason_code": "UNIQUE_RECOVERY_MATCH",
+        "plan_id": "REFUND_CAPTURED_PAYMENT",
+        "matched_step_ids": ["CAPTURE_PAYMENT", "ISSUE_ACCESS"]
+      }
+    },
+    "latest_final_readback": {
+      "workflow_status": "DECIDED",
+      "decision_count": 1,
+      "decision_id": 1,
+      "decision_reporter": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+      "policy_version": "BOUNDED_SAGA_RECOVERY_V2",
+      "scope": "ONE_FAILED_WORKFLOW_ONE_PRE_REGISTERED_RECOVERY_PLAN",
+      "status": "PLAN_SELECTED",
+      "reason_code": "UNIQUE_RECOVERY_MATCH",
+      "plan_id": "REFUND_CAPTURED_PAYMENT",
+      "matched_step_ids_json": "[\"CAPTURE_PAYMENT\",\"ISSUE_ACCESS\"]",
+      "config_digest": "c61b5dca918df265926f55bd71339b58282ba0a3afedb17b9c45a76d599a19d3",
+      "request_digest": "28d28a7faf302c7456442fa51c6f724f3c748627ff0e7d6995cdc0c26dc481b9",
+      "reports_digest": "18a3785f4f7e704e083c8623cc2b4754d399aa506f5eeff0a59ec616dc663f66",
+      "failure_summary_digest": "fe0aee819e2da9ea662652b43ba292573ce6619cb3c658281eaae79d5d7f1ec4",
+      "decision_digest": "8b3ac0950d2daaec636d323a30bcd5bd7f83929571b443dfe52bfb0b979e6f70",
+      "failure_summary": "Payment was captured and remains fully refundable with no refund issued; access issuance failed and no entitlement was created, persisted, activated, or delivered.",
+      "capture_payment_report": {
+        "step_id": "CAPTURE_PAYMENT",
+        "status": "SUCCEEDED",
+        "reporter": "0x797d3b25fb2cca0ff93f60df1910267f3822d655",
+        "effect_summary": "Payment was captured and transferred to the merchant balance. The payment service confirms the full captured amount remains refundable, refund execution is authorized for this failed workflow, and no refund has been issued."
+      },
+      "issue_access_report": {
+        "step_id": "ISSUE_ACCESS",
+        "status": "FAILED",
+        "reporter": "0x87e94edab4418e8a9ea37c0fab0675cf0602a9f2",
+        "effect_summary": "Access issuance failed. No access entitlement was created, persisted, activated, or delivered, and no entitlement identifier exists."
+      }
+    },
+    "verification_sources": [
+      "GenLayer client getTransaction for lifecycle, execution, rounds, and votes",
+      "GenLayer latest-final view calls for policy, reports, status, and decision",
+      "Bradbury Explorer address API for finalization timestamps and normalized MAJORITY_AGREE classification"
+    ]
+  },
+  "semantic_evidence_boundary": "Bradbury proves a finalized byte-identical v0.2.1 deployment and a separate explicit-evidence workflow whose four setup writes and governance transaction all finalized. Governance reached four AGREE votes out of five and persisted decision 1 selecting REFUND_CAPTURED_PAYMENT. Three earlier governance attempts for the original reference remain disclosed as timeout, no-majority, and disagree outcomes with no decision writes.",
   "sanitization": {
     "raw_contract_source_omitted": true,
     "raw_transaction_calldata_omitted": true,
