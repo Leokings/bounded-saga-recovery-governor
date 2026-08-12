@@ -2,7 +2,7 @@
 
 A standalone, MIT-licensed GenLayer Intelligent Contract that turns a partially failed asynchronous workflow into one bounded, auditable recovery decision.
 
-Distributed workflows routinely reach mixed states: inventory is reserved, payment is captured, but fulfillment fails. A conventional retry loop can observe status codes, yet it cannot safely interpret what the completed steps actually did. The controller first freezes one immutable context summary, then each pre-registered step reporter commits a bounded effect summary on-chain. Once every step has reported and the workflow contains both success and failure, GenLayer validators compare those observed effects against a closed catalog of recovery plans. Authenticated reports are the exclusive authoritative evidence; the controller summary cannot establish or override a fact.
+Distributed workflows routinely reach mixed states: inventory is reserved, payment is captured, but fulfillment fails. A conventional retry loop can observe status codes, yet it cannot safely interpret what the completed steps actually did. The controller first freezes one immutable context summary, then each pre-registered step reporter submits a bounded effect summary on-chain. Once every step has reported and the workflow contains both success and failure, GenLayer validators compare those observed effects against a closed catalog of recovery plans. Authenticated reports are the exclusive authoritative evidence; the controller summary cannot establish or override a fact.
 
 The result is exactly one of:
 
